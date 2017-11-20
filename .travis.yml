@@ -1,0 +1,68 @@
+# Copyright 2017 Daniel James
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at http://boost.org/LICENSE_1_0.txt)
+
+# Just rebuild inspect as we don't have any tests
+
+language: cpp
+
+os: linux
+compiler: g++
+
+install:
+  - |
+    if [ "$TRAVIS_BRANCH" == "master" ]
+    then
+      BOOST_BRANCH=master
+    else
+      BOOST_BRANCH=develop
+    fi
+  - cd ..
+  - git clone --depth=1 -b $BOOST_BRANCH https://github.com/boostorg/boost.git boost-root
+  - cd boost-root
+  - git submodule init libs/algorithm
+  - git submodule init libs/array
+  - git submodule init libs/assert
+  - git submodule init libs/bind
+  - git submodule init libs/concept_check
+  - git submodule init libs/config
+  - git submodule init libs/container
+  - git submodule init libs/conversion
+  - git submodule init libs/core
+  - git submodule init libs/detail
+  - git submodule init libs/exception
+  - git submodule init libs/filesystem
+  - git submodule init libs/function
+  - git submodule init libs/function_types
+  - git submodule init libs/functional
+  - git submodule init libs/fusion
+  - git submodule init libs/integer
+  - git submodule init libs/io
+  - git submodule init libs/iterator
+  - git submodule init libs/lexical_cast
+  - git submodule init libs/math
+  - git submodule init libs/move
+  - git submodule init libs/mpl
+  - git submodule init libs/numeric/conversion
+  - git submodule init libs/optional
+  - git submodule init libs/predef
+  - git submodule init libs/preprocessor
+  - git submodule init libs/range
+  - git submodule init libs/regex
+  - git submodule init libs/smart_ptr
+  - git submodule init libs/static_assert
+  - git submodule init libs/system
+  - git submodule init libs/test
+  - git submodule init libs/throw_exception
+  - git submodule init libs/timer
+  - git submodule init libs/type_traits
+  - git submodule init libs/utility
+  - git submodule init tools/build
+  - git submodule update
+  - cp -r $TRAVIS_BUILD_DIR/* tools/inspect
+  - ./bootstrap.sh
+  - ./b2 headers
+
+script:
+  - ./b2 -j 3 tools/inspect/build cxxstd=03
+  - ./b2 -j 3 tools/inspect/build cxxstd=11
